@@ -3,18 +3,20 @@ title: "Course 8 Project"
 author: "Tal Darchi"
 date: "April 11, 2018"
 output:
-  html_document: default
-  pdf_document: default
+  html_document:
+    df_print: paged
+  md_document:
+    variant: markdown_github
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-#Background
+# Background
 Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively. These type of devices are part of the quantified self movement - a group of enthusiasts who take measurements about themselves regularly to improve their health, to find patterns in their behavior, or because they are tech geeks. One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. In this project, your goal will be to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. More information is available from the website here: http://groupware.les.inf.puc-rio.br/har (see the section on the Weight Lifting Exercise Dataset).
 
-#Summary
+# Summary
 The goal of this project is to predict the manner in which they did the exercise. This is the "classe" variable in the training set. You may use any of the other variables to predict with. You should create a report describing how you built your model, how you used cross validation, what you think the expected out of sample error is, and why you made the choices you did. You will also use your prediction model to predict 20 different test cases.
 
 ## Preprocessing
@@ -33,7 +35,7 @@ train <- read.csv("pml-training.csv")
 test <- read.csv("pml-testing.csv")
 ```
 
-##Cleaning the data
+## Cleaning the data
 First i'll omit the first six variables which don't contribute anything to the prediction process (ie. id, timestamp, etc.) 
 ```{r notcontributing}
 train <- train[, -c(1:7)]
@@ -64,7 +66,7 @@ Removing highly correlated predictors:
 train <- train[, -c(sort(findCorrelation(cor(train[,-53]), cutoff=0.9)))]
 ```
 
-#Cross-Validation
+# Cross-Validation
 
 The train dataset has 46 variables and 19622 obs
 The test dataset has 46 variables and 20 obs
@@ -77,12 +79,12 @@ cvTraining <- train[inTrain, ]
 cvTesting <- train[-inTrain, ]
 ```
 
-#Model Creation
+# Model Creation
 in order to build the model and find the most suitable one i'll first try to use the decision tree model using
 the rpart library with method equal to class.
 after that i will try random forest using the randomForest library and i expect it to overcome the decision tree in the overall accuracy.
 
-##Desicion Tree
+## Desicion Tree
 ```{r decisiontree}
 dt <- rpart(classe ~ ., data=cvTraining, method="class")
 dtPrediction <- predict(dt, newdata = cvTesting, type = "class")
@@ -103,7 +105,7 @@ so the accuracy is:
 cm$overall[1]
 ```
 
-##Random Forest
+## Random Forest
 ```{r rf}
 rforest <- randomForest(classe~., data=cvTraining)
 rfPrediction <- predict(rforest, newdata = cvTesting)
@@ -121,13 +123,13 @@ so the accuracy is:
 cm$overall[1]
 ```
 
-#Decision and out of sample error
+# Decision and out of sample error
 i decided to choose the random forest model, as expected it has extremely high accuracy (0.9942) and i expect it to predict
 the test set very well, thus it willl provide the predictions for the submission.
 because we used a validation set we can expect the out of sample error to be about 0.0058.
 
 
-#Submission - predicting of the test set
+# Submission - predicting of the test set
 ```{r predicttest}
 testPred <- predict(rforest, newdata = test, type = "class")
 testPred
