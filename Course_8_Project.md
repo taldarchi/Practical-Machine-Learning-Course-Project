@@ -247,7 +247,7 @@ cm$overall[1]
 Decision and out of sample error
 ================================
 
-i decided to choose the random forest model, as expected it has extremely high accuracy (0.9942) and i expect it to predict the test set very well, thus it willl provide the predictions for the submission. because we used a validation set we can expect the out of sample error to be about 0.0058.
+i decided to choose the random forest model, as expected it has extremely high accuracy (0.9937) and i expect it to predict the test set very well, thus it willl provide the predictions for the submission. because we used a validation set we can expect the out of sample error to be about 0.0062.
 
 Submission - predicting of the test set
 =======================================
